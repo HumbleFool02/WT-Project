@@ -1,10 +1,12 @@
-from flask import Flask, render_template
+from flask import Flask, render_template , redirect,url_for, session, logging, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import false
-from flask import request
+
+
 
 
 app = Flask(__name__)
+app.secret_key = 'super-secret-key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/onlinesystem'
 db = SQLAlchemy(app)
 
@@ -31,18 +33,25 @@ def home():
 def index():
     return render_template('index.html')
 
-@app.route("/ManagerLogin")
-def ManagerLogin():
+@app.route("/ManagerLogin", methods = ['GET', 'POST'])
+def managerLogin():
+    username = request.form.get('username')
+    pword = request.form.get('pword')
+
+    login = Registration.query.filter_by(username=username, pword=pword).first()
+    if login is not None:
+        return redirect(url_for("managerdash.html"))
+    
     return render_template('ManagerLogin.html')
 
-@app.route("/SecurityLogin")
-def SecurityLogin():
+@app.route("/SecurityLogin", methods = ['GET', 'POST'])
+def securityLogin():
+
     return render_template('SecurityLogin.html')
 
 @app.route("/registration", methods = ['GET', 'POST'])
 def registration():
     if(request.method=='POST'):
-        '''Add entry to the database'''
         name = request.form.get('name')
         username = request.form.get('username')
         domain = request.form.get('domain')
@@ -56,7 +65,6 @@ def registration():
 @app.route("/contact", methods = ['GET', 'POST'])
 def contact():
     if(request.method=='POST'):
-        '''Add entry to the database'''
         name = request.form.get('name')
         email = request.form.get('email')
         phone = request.form.get('phone')
