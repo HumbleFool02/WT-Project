@@ -1,7 +1,7 @@
 from flask import Flask, render_template , redirect,url_for, session, logging, request
+from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import false
-
 
 
 
@@ -9,6 +9,7 @@ app = Flask(__name__)
 app.secret_key = 'super-secret-key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/onlinesystem'
 db = SQLAlchemy(app)
+
 
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -33,16 +34,27 @@ def home():
 def index():
     return render_template('index.html')
 
+
 @app.route("/ManagerLogin", methods = ['GET', 'POST'])
 def managerLogin():
-    username = request.form.get('username')
-    pword = request.form.get('pword')
+    if request.method == 'GET':
+        return render_template('ManagerLogin.html')
+    else:
+        username = request.form.get('username')
+        pword = request.form.get('pword')
+        try:
+            data = Registration.query.filter_by(username=username, pword=pword).first()
+            if data is not None:
+                session['logged_in'] = True
+                return redirect(url_for('managerdashoard'))
+            else:
+                return 'Dont Login'
+        except:
+            return "Dont Login"
 
-    login = Registration.query.filter_by(username=username, pword=pword).first()
-    if login is not None:
-        return redirect(url_for("managerdash.html"))
-    
-    return render_template('ManagerLogin.html')
+@app.route("/managerdashboard", methods = ['GET', 'POST'])
+def dashboard():
+    return render_template('managerdash.html')
 
 @app.route("/SecurityLogin", methods = ['GET', 'POST'])
 def securityLogin():
