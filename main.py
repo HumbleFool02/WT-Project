@@ -18,7 +18,15 @@ class Contact(db.Model):
     phone = db.Column(db.String(20), unique=False, nullable=False)
     msg = db.Column(db.String(120), unique=False, nullable=False)
 
-class Registration(db.Model):
+class Manager(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), unique=False, nullable=False)
+    username = db.Column(db.String(120), unique=True, nullable=False)
+    domain = db.Column(db.String(120), unique=False, nullable=False)
+    idno = db.Column(db.String(120), unique=True, nullable=False)
+    pword = db.Column(db.String(120), unique=False, nullable=False)
+
+class Security(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=False, nullable=False)
     username = db.Column(db.String(120), unique=True, nullable=False)
@@ -43,23 +51,47 @@ def managerLogin():
         username = request.form.get('username')
         pword = request.form.get('pword')
         try:
-            data = Registration.query.filter_by(username=username, pword=pword).first()
+            data = Manager.query.filter_by(username=username, pword=pword).first()
             if data is not None:
+                print("logged in")
                 session['logged_in'] = True
-                return redirect(url_for('managerdashoard'))
+                return render_template('managerdash.html')
+
             else:
+                print("dont login 1")
                 return 'Dont Login'
         except:
+            print("dont login 2")
             return "Dont Login"
-
-@app.route("/managerdashboard", methods = ['GET', 'POST'])
-def dashboard():
-    return render_template('managerdash.html')
 
 @app.route("/SecurityLogin", methods = ['GET', 'POST'])
 def securityLogin():
+    if request.method == 'GET':
+        return render_template('SecurityLogin.html')
+    else:
+        username = request.form.get('username')
+        pword = request.form.get('pword')
+        try:
+            data1 = Security.query.filter_by(username=username, pword=pword).first()
+            if data1 is not None:
+                print("logged in")
+                session['logged_in'] = True
+                return render_template('securitydash.html')
 
-    return render_template('SecurityLogin.html')
+            else:
+                print("dont login 1")
+                return 'Dont Login'
+        except:
+            print("dont login 2")
+            return "Dont Login"
+
+@app.route("/managerdashboard", methods = ['GET', 'POST'])
+def mangerdashboard():
+    return render_template('managerdash.html')
+
+@app.route("/securitydashboard", methods = ['GET', 'POST'])
+def securitydashboard():
+    return render_template('securitydash.html')
 
 @app.route("/registration", methods = ['GET', 'POST'])
 def registration():
@@ -69,9 +101,15 @@ def registration():
         domain = request.form.get('domain')
         idno = request.form.get('idno')
         pword = request.form.get('pword')
-        entry = Registration(name=name, username = username , domain = domain ,idno = idno, pword = pword)
-        db.session.add(entry)
-        db.session.commit()
+        if domain == "Manager": 
+            entry = Manager(name=name, username = username , domain = domain ,idno = idno, pword = pword)
+            db.session.add(entry)
+            db.session.commit()
+        else:
+            entry = Security(name=name, username = username , domain = domain ,idno = idno, pword = pword)
+            db.session.add(entry)
+            db.session.commit()
+
     return render_template('registration.html')
 
 @app.route("/contact", methods = ['GET', 'POST'])
