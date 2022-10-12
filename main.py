@@ -50,6 +50,8 @@ def managerLogin():
     else:
         username = request.form.get('username')
         pword = request.form.get('pword')
+        print(username)
+        print(pword)
         try:
             data = Manager.query.filter_by(username=username, pword=pword).first()
             if data is not None:
@@ -71,6 +73,8 @@ def securityLogin():
     else:
         username = request.form.get('username')
         pword = request.form.get('pword')
+        print(username)
+        print(pword)
         try:
             data1 = Security.query.filter_by(username=username, pword=pword).first()
             if data1 is not None:
