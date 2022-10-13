@@ -1,4 +1,4 @@
-from flask import Flask, render_template , redirect,url_for, session, logging, request
+from flask import Flask, render_template , redirect,url_for, session, logging, request, flash
 # from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import false
@@ -23,6 +23,7 @@ class Manager(db.Model):
     idno = db.Column(db.String(120), unique=True, nullable=False)
     pword = db.Column(db.String(120), unique=False, nullable=False)
 
+
 class Security(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=False, nullable=False)
@@ -30,6 +31,7 @@ class Security(db.Model):
     domain = db.Column(db.String(120), unique=False, nullable=False)
     idno = db.Column(db.String(120), unique=True, nullable=False)
     pword = db.Column(db.String(120), unique=False, nullable=False)
+
 
 @app.route("/")
 def home():
@@ -47,8 +49,7 @@ def managerLogin():
     else:
         username = request.form.get('username')
         pword = request.form.get('pword')
-        print(username)
-        print(pword)
+
         try:
             data = Manager.query.filter_by(username=username, pword=pword).first()
             if data is not None:
@@ -102,14 +103,18 @@ def registration():
         domain = request.form.get('domain')
         idno = request.form.get('idno')
         pword = request.form.get('pword')
-        if domain == "Manager": 
-            entry = Manager(name=name, username = username , domain = domain ,idno = idno, pword = pword)
-            db.session.add(entry)
-            db.session.commit()
-        else:
-            entry = Security(name=name, username = username , domain = domain ,idno = idno, pword = pword)
-            db.session.add(entry)
-            db.session.commit()
+        cpword = request.form.get('cpword')
+        if pword == cpword :
+            if domain == "Manager": 
+                entry = Manager(name=name, username = username , domain = domain ,idno = idno, pword = pword)
+                db.session.add(entry)
+                db.session.commit()
+            else:
+                entry = Security(name=name, username = username , domain = domain ,idno = idno, pword = pword)
+                db.session.add(entry)
+                db.session.commit()
+        else :
+            flash("Password does not match")
 
     return render_template('registration.html')
 
