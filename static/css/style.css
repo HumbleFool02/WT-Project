@@ -128,3 +128,7 @@ h1{
 		background-position: 0% 50%;
 	}
 }
+#fademe{
+  opacity: 0;
+  transition: 3s;
+}

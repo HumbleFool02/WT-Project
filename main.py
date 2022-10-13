@@ -1,15 +1,12 @@
 from flask import Flask, render_template , redirect,url_for, session, logging, request
-from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
+# from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import false
-
-
 
 app = Flask(__name__)
 app.secret_key = 'super-secret-key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/onlinesystem'
 db = SQLAlchemy(app)
-
 
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
