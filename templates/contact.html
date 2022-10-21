@@ -10,7 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename = '/css/login.css')}}">
-    <title></title>
+    <title>Contact US</title>
+    <link rel="icon" type="image/x-icon" href="../static/images/favicon.svg">
 </head>
 
 <body>
@@ -26,11 +27,11 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="/index">Home <span class="sr-only">(current)</span></a>
+                        <li class="nav-item ">
+                            <a class="nav-link active" href="/index">Home <span class="sr-only">(current)</span></a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/contact">Contact Us<span class="sr-only">(current)</span></a>
+                        <li class="nav-item ">
+                            <a class="nav-link active" href="/contact">Contact Us<span class="sr-only">(current)</span></a>
                         </li>
 
                     </ul>
@@ -41,34 +42,27 @@
     <section class="form my-4 mx-5">
         <div class="container">
             <div class="row no-gutters">
-                <div class="col-lg-5">
-
-                </div>
                 <div class="col-lg-12 ">
                     <h1 class="font-weight-bold py-3">Contact Us</h1>
                     <form action="/contact" method="post">
                         <div class="form-row">
                             <div class="col-lg-4 col-4">
-                                <input type="text" placeholder="Name" name="name" value="" class="form-control" my-3
-                                    p-3>
+                                <input type="text" placeholder="Name" name="name" value="" class="form-control" my-3 p-3 required/>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-lg-4 col-4">
-                                <input type="text" placeholder="Email Address " name="email" value=""
-                                    class="form-control" my-3 p-3>
+                                <input type="text" placeholder="Email Address " name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email" value="" class="form-control" my-3 p-3 required/>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-lg-4 col-4">
-                                <input type="text" placeholder="Contact Number" name="phone" value=""
-                                    class="form-control" my-3 p-3>
+                                <input type="number" placeholder="Contact Number" pattern="[0-9]{10}" name="phone" value="" class="form-control" my-3 p-3 required/>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-lg-4 col-4">
-                                <input type="text" placeholder="Message" name="msg" value="" class="form-control" my-3
-                                    p-3>
+                                <input type="text" placeholder="Message" name="msg" value="" class="form-control" my-3 p-3 required/>
                             </div>
                         </div>
                         <div class="form-row">

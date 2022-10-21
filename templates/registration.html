@@ -10,7 +10,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename = '/css/login.css')}}">
-  <title></title>
+  <title>Register </title>
+  <link rel="icon" type="image/x-icon" href="../static/images/favicon.svg">
 </head>
 
 <body>
@@ -25,11 +26,11 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="/index">Home <span class="sr-only">(current)</span></a>
+            <li class="nav-item ">
+              <a class="nav-link active" href="/index">Home <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/contact">Contact Us <span class="sr-only">(current)</span></a>
+            <li class="nav-item ">
+              <a class="nav-link active" href="/contact">Contact Us <span class="sr-only">(current)</span></a>
             </li>
           </ul>
         </div>
@@ -48,12 +49,12 @@
             
             <div class="form-row">
               <div class="col-lg-4 col-4">
-                <input type="text" placeholder="Name" name="name" value="" class="form-control" my-3 p-3>
+                <input type="text" placeholder="Name" name="name" value="" class="form-control" my-3 p-3 required/>
               </div>
             </div>
             <div class="form-row">
               <div class="col-lg-4 col-4">
-                <input type="text" placeholder="Username" name="username" value="" class="form-control" my-3 p-3>
+                <input type="text" placeholder="Username" name="username" value="" class="form-control" my-3 p-3 required/>
               </div>
             </div>
             <div class="form-row">
@@ -67,22 +68,22 @@
             </div>
             <div class="form-row">
               <div class="col-lg-4 col-4">
-                <input type="text" placeholder="Identity Number" name="idno" value="" class="form-control" my-3 p-3>
+                <input type="text" placeholder="Identity Number" minlength="5" maxlength="5" name="idno" size = "5" value="" class="form-control" my-3 p-3 required/>
               </div>
             </div>
             <div class="form-row">
               <div class="col-lg-4 col-4">
-                <input type="password" placeholder="Enter Password" name="pword" value="" class="form-control" my-3 p-3>
+                <input type="password" placeholder="Enter Password" name="pword" value="" class="form-control" my-3 p-3 required/>
               </div>
             </div>
             <div class="form-row">
               <div class="col-lg-4 col-4">
-                <input type="password" placeholder="Confirm Password" name="cpword" value="" class="form-control" my-3 p-3>
+                <input type="password" placeholder="Confirm Password" name="cpword" value="" class="form-control" my-3 p-3 required/>
               </div>
             </div>
             <div class="form-row">
               <div class="col-lg-4 col-4">
-                <button type="submit" class="btn btn-primary" name="button">Submit</button>
+                <button type="submit" class="btn btn-primary" name="button" onclick="msg()">Submit</button>
               </div>
             </div>
             <div style="text-align: center;">
@@ -95,5 +96,9 @@
     </div>
 
   </section>
-
+  <script>
+    function msg() {
+      alert("Successfully Registered. Please go to login page.");
+    }
+    </script>
 </html>

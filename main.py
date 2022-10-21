@@ -87,6 +87,11 @@ def securityLogin():
             print("dont login 2")
             return "Dont Login"
 
+@app.route("/logout")
+def logout():
+    session.pop('username',None)
+    return redirect(url_for('index'))
+
 @app.route("/managerdashboard", methods = ['GET', 'POST'])
 def mangerdashboard():
     return render_template('managerdash.html')
