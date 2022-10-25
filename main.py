@@ -2,6 +2,8 @@ from flask import Flask, render_template , redirect,url_for, session, logging, r
 # from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import false
+import pymysql
+pymysql.install_as_MySQLdb()
 
 app = Flask(__name__)
 app.secret_key = 'super-secret-key'
