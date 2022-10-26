@@ -1,9 +1,12 @@
+from hashlib import sha256
+from tkinter import SE
 from flask import Flask, render_template , redirect,url_for, session, logging, request, flash
 # from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import false
+from sqlalchemy import select
 import pymysql
 pymysql.install_as_MySQLdb()
+
 
 app = Flask(__name__)
 app.secret_key = 'super-secret-key'
@@ -23,7 +26,8 @@ class Manager(db.Model):
     username = db.Column(db.String(120), unique=True, nullable=False)
     domain = db.Column(db.String(120), unique=False, nullable=False)
     idno = db.Column(db.String(120), unique=True, nullable=False)
-    pword = db.Column(db.String(120), unique=False, nullable=False)
+    pword = db.Column(db.String(500), unique=False, nullable=False)
+
 
 
 class Security(db.Model):
@@ -50,15 +54,15 @@ def managerLogin():
         return render_template('ManagerLogin.html')
     else:
         username = request.form.get('username')
-        pword = request.form.get('pword')
-
+        pword = (request.form.get('pword'))
+       
         try:
-            data = Manager.query.filter_by(username=username, pword=pword).first()
-            if data is not None:
+            data = Manager.query.filter_by(username=username).first()
+            
+            if ((data is not None)):
                 print("logged in")
                 session['logged_in'] = True
-                return render_template('managerdash.html')
-
+                return redirect(url_for('managerdashboard'))
             else:
                 print("dont login 1")
                 return 'Dont Login'
@@ -73,21 +77,19 @@ def securityLogin():
     else:
         username = request.form.get('username')
         pword = request.form.get('pword')
-        print(username)
-        print(pword)
         try:
             data1 = Security.query.filter_by(username=username, pword=pword).first()
-            if data1 is not None:
+            if (data1 is not None):
                 print("logged in")
                 session['logged_in'] = True
                 return render_template('securitydash.html')
 
             else:
                 print("dont login 1")
-                return 'Dont Login'
+                return 'Dont Login else'
         except:
             print("dont login 2")
-            return "Dont Login"
+            return "Dont Login except"
 
 @app.route("/logout")
 def logout():
@@ -96,7 +98,21 @@ def logout():
 
 @app.route("/managerdashboard", methods = ['GET', 'POST'])
 def mangerdashboard():
+    # print("Print Print")
+    # try:
+    #     security = Security.query.filter_by(domain = 'Security').all()
+    #     security_text = '<ul>'
+    #     for secu in security:
+    #         security_text += '<li>' + secu.name + ',' + secu.idno + '</li>'
+    #     security_text += '</ul>'
+    #     return security_text
+    # except Exception as e:
+    #     # e holds description of the error
+    #     error_text = "<p>The error:<br>" + str(e) + "</p>"
+    #     hed = '<h1>Something is broken.</h1>'
+    #     return hed + error_text
     return render_template('managerdash.html')
+    
 
 @app.route("/securitydashboard", methods = ['GET', 'POST'])
 def securitydashboard():
@@ -110,7 +126,7 @@ def registration():
         domain = request.form.get('domain')
         idno = request.form.get('idno')
         pword = request.form.get('pword')
-        cpword = request.form.get('cpword')
+        cpword = request.form.get('cpword') 
         if pword == cpword :
             if domain == "Manager": 
                 entry = Manager(name=name, username = username , domain = domain ,idno = idno, pword = pword)
@@ -121,7 +137,7 @@ def registration():
                 db.session.add(entry)
                 db.session.commit()
         else :
-            flash("Password does not match")
+            return "Password does not match" 
 
     return render_template('registration.html')
 
