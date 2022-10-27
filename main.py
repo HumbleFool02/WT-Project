@@ -28,8 +28,6 @@ class Manager(db.Model):
     idno = db.Column(db.String(120), unique=True, nullable=False)
     pword = db.Column(db.String(500), unique=False, nullable=False)
 
-
-
 class Security(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=False, nullable=False)
@@ -38,6 +36,12 @@ class Security(db.Model):
     idno = db.Column(db.String(120), unique=True, nullable=False)
     pword = db.Column(db.String(120), unique=False, nullable=False)
 
+class Absence(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    idno = db.Column(db.String(120), unique=True, nullable=False)
+    sdate = db.Column(db.String, unique=False, nullable=False)
+    edate = db.Column(db.String, unique=False, nullable=False)
+    reason = db.Column(db.String(120), unique=False, nullable=False)
 
 @app.route("/")
 def home():
@@ -45,8 +49,9 @@ def home():
 
 @app.route("/index")
 def index():
+    print(url_for('managerdashboard'))
     return render_template('index.html')
-
+    
 
 @app.route("/ManagerLogin", methods = ['GET', 'POST'])
 def managerLogin():
@@ -55,11 +60,10 @@ def managerLogin():
     else:
         username = request.form.get('username')
         pword = (request.form.get('pword'))
-       
         try:
-            data = Manager.query.filter_by(username=username).first()
-            
-            if ((data is not None)):
+            print("in try")
+            data = Manager.query.filter_by(username=username,pword=pword).first()
+            if data is not None:
                 print("logged in")
                 session['logged_in'] = True
                 return redirect(url_for('managerdashboard'))
@@ -82,8 +86,7 @@ def securityLogin():
             if (data1 is not None):
                 print("logged in")
                 session['logged_in'] = True
-                return render_template('securitydash.html')
-
+                return redirect(url_for('securitydashboard'))
             else:
                 print("dont login 1")
                 return 'Dont Login else'
@@ -97,25 +100,45 @@ def logout():
     return redirect(url_for('index'))
 
 @app.route("/managerdashboard", methods = ['GET', 'POST'])
-def mangerdashboard():
-    # print("Print Print")
+def managerdashboard():
+    print("Print Print")
     # try:
+    #     print("try")
     #     security = Security.query.filter_by(domain = 'Security').all()
     #     security_text = '<ul>'
     #     for secu in security:
-    #         security_text += '<li>' + secu.name + ',' + secu.idno + '</li>'
+    #         security_text += '<li>' + secu.name + ',' + secu.username + '</li>'
+    #         print(security_text)
     #     security_text += '</ul>'
     #     return security_text
     # except Exception as e:
     #     # e holds description of the error
+    #     print("except")
     #     error_text = "<p>The error:<br>" + str(e) + "</p>"
     #     hed = '<h1>Something is broken.</h1>'
     #     return hed + error_text
-    return render_template('managerdash.html')
-    
+    try:
+        security = Security.query.filter_by(domain='Security').order_by(Security.name).all()
+        return render_template('managerdash.html', security=security)
+    except Exception as e:
+        # e holds description of the error
+        error_text = "<p>The error:<br>" + str(e) + "</p>"
+        hed = '<h1>Something is broken.</h1>'
+        return hed + error_text
 
 @app.route("/securitydashboard", methods = ['GET', 'POST'])
 def securitydashboard():
+    if(request.method=='POST'):
+        idno = request.form.get('idno')
+        sdate = request.form.get('sdate')
+        edate = request.form.get('edate')
+        reason = request.form.get('reason')
+        print(reason)
+        print(edate)
+        abs = Absence(idno=idno , sdate= sdate,edate=edate,reason=reason)
+        db.session.add(abs)
+        db.session.commit()
+        
     return render_template('securitydash.html')
 
 @app.route("/registration", methods = ['GET', 'POST'])
