@@ -45,40 +45,44 @@
         </div>
         <div class="col-lg-12 ">
           <h1 class="font-weight-bold py-3">Registration Form</h1>
-          <form  action="/registration" method="post">
-            
+          <form action="/registration" method="post">
+
             <div class="form-row">
               <div class="col-lg-4 col-4">
-                <input type="text" placeholder="Name" name="name" value="" class="form-control" my-3 p-3 required/>
+                <input type="text" placeholder="Name" name="name" value="" class="form-control" my-3 p-3 required />
               </div>
             </div>
             <div class="form-row">
               <div class="col-lg-4 col-4">
-                <input type="text" placeholder="Username" name="username" value="" class="form-control" my-3 p-3 required/>
+                <input type="text" placeholder="Username" name="username" value="" class="form-control" my-3 p-3
+                  required />
               </div>
             </div>
             <div class="form-row">
               <div class="col-lg-4 col-4" style="text-align: left;">
                 <label>Select Domain</label>
-                  <select name="domain">
-                    <option value="Manager">Manager</option>
-                    <option value="Security">Security</option>
-                  </select>
+                <select name="domain">
+                  <option value="Manager">Manager</option>
+                  <option value="Security">Security</option>
+                </select>
               </div>
             </div>
             <div class="form-row">
               <div class="col-lg-4 col-4">
-                <input type="text" placeholder="Identity Number" minlength="5" maxlength="5" name="idno" size = "5" value="" class="form-control" my-3 p-3 required/>
+                <input type="text" placeholder="Identity Number" minlength="5" maxlength="5" name="idno" size="5"
+                  value="" class="form-control" my-3 p-3 required />
               </div>
             </div>
             <div class="form-row">
               <div class="col-lg-4 col-4">
-                <input type="password" placeholder="Enter Password" name="pword" value="" class="form-control" my-3 p-3 required/>
+                <input type="password" placeholder="Enter Password" name="pword" value="" class="form-control" my-3 p-3
+                  required />
               </div>
             </div>
             <div class="form-row">
               <div class="col-lg-4 col-4">
-                <input type="password" placeholder="Confirm Password" name="cpword" value="" class="form-control" my-3 p-3 required/>
+                <input type="password" placeholder="Confirm Password" name="cpword" value="" class="form-control" my-3
+                  p-3 required />
               </div>
             </div>
             <div class="form-row">
@@ -100,5 +104,7 @@
     function msg() {
       alert("Successfully Registered. Please go to login page.");
     }
-    </script>
+  </script>
+  <script src="../ajax.js"></script>
+
 </html>
