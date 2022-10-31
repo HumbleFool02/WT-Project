@@ -51,7 +51,7 @@ h1 {
 }
 
 .form-row {
-  text-align: center;
+  text-align: left;
   padding-bottom: 20px;
   justify-content: center;
   justify-items: center;
@@ -63,4 +63,24 @@ caption {
   display: table-caption;
   text-align: center;
   caption-side: top;
+}
+.butn {
+  text-align: center;
+  border: 1px solid #000;
+  outline: none;
+  height: 35px;
+  width: 90%;
+  background-color: #fff;
+  color: #000;
+  border-radius: 4px;
+  font-weight: bold;
+  justify-content: left;
+  justify-items: left;
+
+}
+.form-roww {
+  text-align: left;
+  padding-bottom: 10px;
+  justify-content: left;
+  justify-items: left;
 }

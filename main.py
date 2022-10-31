@@ -1,12 +1,10 @@
-from hashlib import sha256
-from tkinter import SE
-from flask import Flask, render_template , redirect,url_for, session, logging, request, flash
-# from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
+from datetime import date, datetime
+from flask import Flask, render_template , redirect,url_for, session, request
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import select
+
 import pymysql
 pymysql.install_as_MySQLdb()
-
+from werkzeug.security import generate_password_hash,check_password_hash
 
 app = Flask(__name__)
 app.secret_key = 'super-secret-key'
@@ -42,6 +40,8 @@ class Absence(db.Model):
     sdate = db.Column(db.String, unique=False, nullable=False)
     edate = db.Column(db.String, unique=False, nullable=False)
     reason = db.Column(db.String(120), unique=False, nullable=False)
+    status = db.Column(db.String(120), unique=False, nullable=False)
+    timestamp = db.Column(db.String(120), unique=False, nullable=False)
 
 @app.route("/")
 def home():
@@ -101,7 +101,6 @@ def logout():
 
 @app.route("/managerdashboard", methods = ['GET', 'POST'])
 def managerdashboard():
-    print("Print Print")
     # try:
     #     print("try")
     #     security = Security.query.filter_by(domain = 'Security').all()
@@ -117,14 +116,28 @@ def managerdashboard():
     #     error_text = "<p>The error:<br>" + str(e) + "</p>"
     #     hed = '<h1>Something is broken.</h1>'
     #     return hed + error_text
-    try:
-        security = Security.query.filter_by(domain='Security').order_by(Security.name).all()
-        return render_template('managerdash.html', security=security)
-    except Exception as e:
-        # e holds description of the error
-        error_text = "<p>The error:<br>" + str(e) + "</p>"
-        hed = '<h1>Something is broken.</h1>'
-        return hed + error_text
+    if (request.method == 'GET'):
+        try:
+            security = Security.query.filter_by(domain='Security').order_by(Security.name).all()
+            abes = Absence.query.filter_by(status = 'Pending').order_by(Absence.timestamp).all()
+
+            return render_template('managerdash.html', security=security, abes=abes)
+        except Exception as e:
+            # e holds description of the error
+            error_text = "<p>The error:<br>" + str(e) + "</p>"
+            hed = '<h1>Something is broken.</h1>'
+            return hed + error_text
+    # else :
+    #     try:
+    #         security = Security.query.filter_by(domain='Security').order_by(Security.name).all()
+    #         abes = Absence.query.filter_by(status = 'Pending').order_by(Absence.timestamp).all()
+    #         return render_template('managerdash.html', security=security, abes=abes)
+    #     except Exception as e:
+    #         # e holds description of the error
+    #         error_text = "<p>The error:<br>" + str(e) + "</p>"
+    #         hed = '<h1>Something is broken.</h1>'
+    #         return hed + error_text
+    
 
 @app.route("/securitydashboard", methods = ['GET', 'POST'])
 def securitydashboard():
@@ -135,7 +148,7 @@ def securitydashboard():
         reason = request.form.get('reason')
         print(reason)
         print(edate)
-        abs = Absence(idno=idno , sdate= sdate,edate=edate,reason=reason)
+        abs = Absence(idno=idno , sdate= sdate,edate=edate,reason=reason,status ='Pending',timestamp= datetime.now())
         db.session.add(abs)
         db.session.commit()
         
@@ -150,13 +163,16 @@ def registration():
         idno = request.form.get('idno')
         pword = request.form.get('pword')
         cpword = request.form.get('cpword') 
+        hashpass = generate_password_hash(pword)
         if pword == cpword :
             if domain == "Manager": 
-                entry = Manager(name=name, username = username , domain = domain ,idno = idno, pword = pword)
+                #entry = Manager(name=name, username = username , domain = domain ,idno = idno, pword = pword)
+                entry = Manager(name=name, username = username , domain = domain ,idno = idno,pword = hashpass)
                 db.session.add(entry)
                 db.session.commit()
             else:
-                entry = Security(name=name, username = username , domain = domain ,idno = idno, pword = pword)
+                #entry = Security(name=name, username = username , domain = domain ,idno = idno, pword = pword)
+                entry = Security(name=name, username = username , domain = domain ,idno = idno, pword = hashpass)
                 db.session.add(entry)
                 db.session.commit()
         else :

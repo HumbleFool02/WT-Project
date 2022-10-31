@@ -57,23 +57,43 @@
       {% endfor %}
     </tbody>
   </table>
-  <!-- <table class="table">
+  <table class="table">
     <caption>List of security personal</caption>
     <thead>
       <tr>
-        <th scope="col">Security Personal Name</th>
         <th scope="col">Identity Number</th>
+        <th scope="col">Start Date</th>
+        <th scope="col">End Date</th>
+        <th scope="col">Reason</th>
+        <th scope="col">Status</th>
       </tr>
     </thead>
     <tbody>
-      {% for secu in security %}
+      {% for abs in abes %}
       <tr>
-        <td>{{ secu.name }}</td>
-        <td>{{ secu.idno }}</td>
+        <td>{{ abs.idno }}</td>
+        <td>{{ abs.sdate }}</td>
+        <td>{{ abs.edate }}</td>
+        <td>{{ abs.reason }}</td>
+        <td>
+          <form action="/managerdashboard" method="get">
+            <div class = "form-roww">
+              <select name="status">
+                <option value="Approved">Approve</option>
+                <option value="Denied">Deny</option>
+              </select>
+            </div>
+            <div class = "form-roww">
+            <div class="col-lg-5 col-5">
+              <button type="submit" class="butn" name="button">Update</button>
+            </div>
+          </div>
+          </form>
+        </td>
       </tr>
       {% endfor %}
     </tbody>
-  </table> -->
+  </table>
   <script src="../ajax.js"></script>
 </body>
 

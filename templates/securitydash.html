@@ -39,13 +39,18 @@
         </div>
       </div>
     </nav>
+    </div>  
     <section class="form my-4 mx-5">
       <div class="container">
         <div class="row no-gutters">
           <div class="col-lg-12 ">
-            <h1 class="font-weight-bold py-3">Ask for leave</h1>
             <form action="/securitydashboard" method="post">
-              <label style="font-size:larger ">Ask for a leave<br></label>
+              <div class="form-row">
+                <div class="col-lg-4 col-4">
+                  <label style="font-size:larger; text-align: center; padding-top: 10px;">Ask for a leave</label>
+                </div>
+              </div>
+              
               <div class="form-row">
                 <div class="col-lg-4 col-4">
                   <label>Enter Identity no</label>
@@ -58,29 +63,25 @@
                   <label>Enter Start Date of leave</label>
                   <input type="date" placeholder="Start Date" name="sdate" value="" class="form-control" my-3 p-3
                     required />
-                  <br>
                 </div>
-
               </div>
               <div class="form-row">
                 <div class="col-lg-4 col-4">
                   <label>Enter End Date of leave</label>
                   <input type="date" placeholder="End Date" name="edate" value="" class="form-control" my-3 p-3
                     required />
-                  <br>
                 </div>
               </div>
               <div class="form-row">
-                <div class="mb-3">
+                <div class="col-lg-4 col-4">
                   <label for="exampleFormControlTextarea1" class="form-label">Reason for absence</label>
                   <input type="text" placeholder="Enter your reason" name="reason" value="" class="form-control"
                     required />
                 </div>
               </div>
-
               <div class="form-row">
                 <div class="col-lg-4 col-4">
-                  <button type="submit" class="btn btn-primary" name="button">Submit</button>
+                  <button type="submit" class="btn btn-primary" name="button" onclick="msg()">Submit</button>
                 </div>
               </div>
             </form>
@@ -88,8 +89,11 @@
         </div>
       </div>
 
-    </section>
-    <script src="../ajax.js"></script>
+      <script>
+        function msg() {
+          alert("Succesfully registered a Requested for a leave");
+        }
+      </script>
 </body>
 
 </html>
