@@ -165,7 +165,7 @@ def registration():
         idno = request.form.get('idno')
         password = request.form.get('pword')
         cpword = request.form.get('cpword') 
-        pword = bcrypt.hashpw(password('utf-8'), bcrypt.gensalt())
+        pword = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
         if password == cpword :
             if domain == "Manager": 
