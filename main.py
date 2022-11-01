@@ -1,6 +1,8 @@
 from datetime import date, datetime
+import bcrypt
 from flask import Flask, render_template , redirect,url_for, session, request
 from flask_sqlalchemy import SQLAlchemy
+
 
 import pymysql
 pymysql.install_as_MySQLdb()
@@ -62,8 +64,8 @@ def managerLogin():
         pword = (request.form.get('pword'))
         try:
             print("in try")
-            data = Manager.query.filter_by(username=username,pword=pword).first()
-            if data is not None:
+            data = Manager.query.filter_by(username=username).first()
+            if ((data is not None) & (bcrypt.checkpw(pword.encode('utf-8'), data.pword)==True)):
                 print("logged in")
                 session['logged_in'] = True
                 return redirect(url_for('managerdashboard'))
@@ -161,18 +163,17 @@ def registration():
         username = request.form.get('username')
         domain = request.form.get('domain')
         idno = request.form.get('idno')
-        pword = request.form.get('pword')
+        password = request.form.get('pword')
         cpword = request.form.get('cpword') 
-        hashpass = generate_password_hash(pword)
-        if pword == cpword :
+        pword = bcrypt.hashpw(password('utf-8'), bcrypt.gensalt())
+
+        if password == cpword :
             if domain == "Manager": 
-                #entry = Manager(name=name, username = username , domain = domain ,idno = idno, pword = pword)
-                entry = Manager(name=name, username = username , domain = domain ,idno = idno,pword = hashpass)
+                entry = Manager(name=name, username = username , domain = domain ,idno = idno,pword = pword)
                 db.session.add(entry)
                 db.session.commit()
             else:
-                #entry = Security(name=name, username = username , domain = domain ,idno = idno, pword = pword)
-                entry = Security(name=name, username = username , domain = domain ,idno = idno, pword = hashpass)
+                entry = Security(name=name, username = username , domain = domain ,idno = idno, pword = pword)
                 db.session.add(entry)
                 db.session.commit()
         else :
