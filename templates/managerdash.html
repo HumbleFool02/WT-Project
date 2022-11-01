@@ -40,61 +40,85 @@
       </div>
     </nav>
   </div>
-  <table class="table">
-    <caption>List of security personal</caption>
-    <thead>
-      <tr>
-        <th scope="col">Security Personal Name</th>
-        <th scope="col">Identity Number</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for secu in security %}
-      <tr>
-        <td>{{ secu.name }}</td>
-        <td>{{ secu.idno }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <table class="table">
-    <caption>List of security personal</caption>
-    <thead>
-      <tr>
-        <th scope="col">Identity Number</th>
-        <th scope="col">Start Date</th>
-        <th scope="col">End Date</th>
-        <th scope="col">Reason</th>
-        <th scope="col">Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for abs in abes %}
-      <tr>
-        <td>{{ abs.idno }}</td>
-        <td>{{ abs.sdate }}</td>
-        <td>{{ abs.edate }}</td>
-        <td>{{ abs.reason }}</td>
-        <td>
-          <form action="/managerdashboard" method="get">
-            <div class = "form-roww">
-              <select name="status">
-                <option value="Approved">Approve</option>
-                <option value="Denied">Deny</option>
-              </select>
-            </div>
-            <div class = "form-roww">
-            <div class="col-lg-5 col-5">
-              <button type="submit" class="butn" name="button">Update</button>
-            </div>
-          </div>
-          </form>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <script src="../ajax.js"></script>
+  <div class="username">
+    Welcome {{ username }} !!
+  </div>
+  <div>
+    <a href="/createduty"> Create Duty</a>
+  </div>
+  <div class="card">
+    <table class="table table-bordered table-dark">
+      <caption>List of security personal</caption>
+      <thead>
+        <tr>
+          <th class="table-title" scope="col">Security Personal Name</th>
+          <th class="table-title" scope="col">Identity Number</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for secu in security %}
+        <tr>
+          <td>{{ secu.name }}</td>
+          <td>{{ secu.idno }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <table class="table table-hover table-bordered table-dark">
+      <caption>Duty Table</caption>
+      <thead>
+        <tr>
+          <th class="table-title" scope="col">Identity Number</th>
+          <th class="table-title" scope="col">Duty Date</th>
+          <th class="table-title" scope="col">Start time</th>
+          <th class="table-title" scope="col">End time</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for dty in duty %}
+        <tr>
+          <td>{{ dty.didno }}</td>
+          <td>{{ dty.ddate }}</td>
+          <td>{{ dty.stime }}</td>
+          <td>{{ dty.etime }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <table class="table table-hover table-bordered table-dark">
+      <caption>Leave requested by Security personal</caption>
+      <thead>
+        <tr>
+          <th class="table-title" scope="col">Identity Number</th>
+          <th class="table-title" scope="col">Start Date</th>
+          <th class="table-title" scope="col">End Date</th>
+          <th class="table-title" scope="col">Reason</th>
+          <th class="table-title" scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for abs in abes %}
+        <tr>
+          <td>{{ abs.idno }}</td>
+          <td>{{ abs.sdate }}</td>
+          <td>{{ abs.edate }}</td>
+          <td>{{ abs.reason }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+
+  <script>
+    function msg() {
+      alert("Sucessfully Created Routine");
+    }
+  </script>
 </body>
 
 </html>

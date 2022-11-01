@@ -39,61 +39,84 @@
         </div>
       </div>
     </nav>
-    </div>  
-    <section class="form my-4 mx-5">
-      <div class="container">
-        <div class="row no-gutters">
-          <div class="col-lg-12 ">
-            <form action="/securitydashboard" method="post">
-              <div class="form-row">
-                <div class="col-lg-4 col-4">
-                  <label style="font-size:larger; text-align: center; padding-top: 10px;">Ask for a leave</label>
-                </div>
+  </div>
+  <div>
+    <table class="table table-hover table-bordered table-dark">
+      <caption>Duty Table</caption>
+      <thead>
+        <tr>
+
+          <th class="table-title" scope="col">Duty Date</th>
+          <th class="table-title" scope="col">Start time</th>
+          <th class="table-title" scope="col">End time</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for dty in duty %}
+        <tr>
+          <td>{{ dty.ddate }}</td>
+          <td>{{ dty.stime }}</td>
+          <td>{{ dty.etime }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <section class="form my-4 mx-5">
+    <div class="container">
+      <div class="row no-gutters">
+        <div class="col-lg-12 ">
+          <form action="/securitydashboard" method="post">
+            <div class="form-row">
+              <div class="col-lg-4 col-4">
+                <label style="font-size:larger; text-align: center; padding-top: 10px;">Ask for a leave</label>
               </div>
-              
-              <div class="form-row">
-                <div class="col-lg-4 col-4">
-                  <label>Enter Identity no</label>
-                  <input type="text" placeholder="Identity Number" minlength="5" maxlength="5" name="idno" size="5"
-                    value="" class="form-control" my-3 p-3 required />
-                </div>
+            </div>
+
+            <div class="form-row">
+              <div class="col-lg-4 col-4">
+                <label>Enter Identity no</label>
+                <input type="text" placeholder="Identity Number" minlength="5" maxlength="5" name="idno" size="5"
+                  value="" class="form-control" my-3 p-3 required />
               </div>
-              <div class="form-row">
-                <div class="col-lg-4 col-4">
-                  <label>Enter Start Date of leave</label>
-                  <input type="date" placeholder="Start Date" name="sdate" value="" class="form-control" my-3 p-3
-                    required />
-                </div>
+            </div>
+            <div class="form-row">
+              <div class="col-lg-4 col-4">
+                <label>Enter Start Date of leave</label>
+                <input type="date" placeholder="Start Date" name="sdate" value="" class="form-control" my-3 p-3
+                  required />
               </div>
-              <div class="form-row">
-                <div class="col-lg-4 col-4">
-                  <label>Enter End Date of leave</label>
-                  <input type="date" placeholder="End Date" name="edate" value="" class="form-control" my-3 p-3
-                    required />
-                </div>
+            </div>
+            <div class="form-row">
+              <div class="col-lg-4 col-4">
+                <label>Enter End Date of leave</label>
+                <input type="date" placeholder="End Date" name="edate" value="" class="form-control" my-3 p-3
+                  required />
               </div>
-              <div class="form-row">
-                <div class="col-lg-4 col-4">
-                  <label for="exampleFormControlTextarea1" class="form-label">Reason for absence</label>
-                  <input type="text" placeholder="Enter your reason" name="reason" value="" class="form-control"
-                    required />
-                </div>
+            </div>
+            <div class="form-row">
+              <div class="col-lg-4 col-4">
+                <label for="exampleFormControlTextarea1" class="form-label">Reason for absence</label>
+                <input type="text" placeholder="Enter your reason" name="reason" value="" class="form-control"
+                  required />
               </div>
-              <div class="form-row">
-                <div class="col-lg-4 col-4">
-                  <button type="submit" class="btn btn-primary" name="button" onclick="msg()">Submit</button>
-                </div>
+            </div>
+            <div class="form-row">
+              <div class="col-lg-4 col-4">
+                <button type="submit" class="btn btn-primary" name="button" onclick="msg()">Submit</button>
               </div>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
       </div>
+    </div>
+  </section>
 
-      <script>
-        function msg() {
-          alert("Succesfully registered a Requested for a leave");
-        }
-      </script>
+  <script>
+    function msg() {
+      alert("Succesfully registered a Requested for a leave");
+    }
+  </script>
 </body>
 
 </html>

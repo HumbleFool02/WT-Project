@@ -1,17 +1,17 @@
 from datetime import date, datetime
-import bcrypt
+from flask_bcrypt import Bcrypt
 from flask import Flask, render_template , redirect,url_for, session, request
 from flask_sqlalchemy import SQLAlchemy
 
-
 import pymysql
 pymysql.install_as_MySQLdb()
-from werkzeug.security import generate_password_hash,check_password_hash
 
 app = Flask(__name__)
 app.secret_key = 'super-secret-key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/onlinesystem'
 db = SQLAlchemy(app)
+bcrypt = Bcrypt(app)
+
 
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -21,19 +21,19 @@ class Contact(db.Model):
     msg = db.Column(db.String(120), unique=False, nullable=False)
 
 class Manager(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, unique=True)
     name = db.Column(db.String(120), unique=False, nullable=False)
     username = db.Column(db.String(120), unique=True, nullable=False)
     domain = db.Column(db.String(120), unique=False, nullable=False)
-    idno = db.Column(db.String(120), unique=True, nullable=False)
+    idno = db.Column(db.String(120), primary_key=True, nullable=False)
     pword = db.Column(db.String(500), unique=False, nullable=False)
 
 class Security(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, unique=True)
     name = db.Column(db.String(120), unique=False, nullable=False)
     username = db.Column(db.String(120), unique=True, nullable=False)
     domain = db.Column(db.String(120), unique=False, nullable=False)
-    idno = db.Column(db.String(120), unique=True, nullable=False)
+    idno = db.Column(db.String(120), primary_key=True, nullable=False)
     pword = db.Column(db.String(120), unique=False, nullable=False)
 
 class Absence(db.Model):
@@ -45,13 +45,19 @@ class Absence(db.Model):
     status = db.Column(db.String(120), unique=False, nullable=False)
     timestamp = db.Column(db.String(120), unique=False, nullable=False)
 
+class Duty(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    ddate = db.Column(db.String, unique=False, nullable=False)
+    didno = db.Column(db.String(120), unique =True, nullable=False)
+    stime =db.Column(db.String, unique=False, nullable=False)
+    etime = db.Column(db.String, unique=False, nullable=False)
+
 @app.route("/")
 def home():
     return render_template('index.html')
 
 @app.route("/index")
 def index():
-    print(url_for('managerdashboard'))
     return render_template('index.html')
     
 
@@ -62,19 +68,23 @@ def managerLogin():
     else:
         username = request.form.get('username')
         pword = (request.form.get('pword'))
-        try:
-            print("in try")
-            data = Manager.query.filter_by(username=username).first()
-            if ((data is not None) & (bcrypt.checkpw(pword.encode('utf-8'), data.pword)==True)):
-                print("logged in")
-                session['logged_in'] = True
-                return redirect(url_for('managerdashboard'))
-            else:
-                print("dont login 1")
-                return 'Dont Login'
-        except:
-            print("dont login 2")
-            return "Dont Login"
+        data = Manager.query.filter_by(username=username).first()
+        
+        if ((data is not None) & (bcrypt.check_password_hash(data.pword, pword)==True)):
+            session['logged_in'] = True
+            security = Security.query.filter_by(domain='Security').order_by(Security.name).all()
+            abes = Absence.query.filter_by(status = 'Pending').order_by(Absence.timestamp).all()
+            duty = Duty.query.order_by(Duty.ddate).all()
+            
+            
+            
+                 
+            return render_template('managerdash.html', security=security, abes=abes , username = data.username, duty = duty)
+             
+        else:
+            print("dont login 1")
+            return 'Dont Login'
+
 
 @app.route("/SecurityLogin", methods = ['GET', 'POST'])
 def securityLogin():
@@ -84,11 +94,11 @@ def securityLogin():
         username = request.form.get('username')
         pword = request.form.get('pword')
         try:
-            data1 = Security.query.filter_by(username=username, pword=pword).first()
-            if (data1 is not None):
-                print("logged in")
+            data1 = Security.query.filter_by(username=username).first()
+            if ((data1 is not None) & (bcrypt.check_password_hash(data1.pword, pword)==True)):
                 session['logged_in'] = True
-                return redirect(url_for('securitydashboard'))
+                duty = Duty.query.filter_by(didno = data1.idno).order_by(Duty.ddate).all()
+                return render_template('Securitydash.html', duty = duty)
             else:
                 print("dont login 1")
                 return 'Dont Login else'
@@ -101,46 +111,22 @@ def logout():
     session.pop('username',None)
     return redirect(url_for('index'))
 
-@app.route("/managerdashboard", methods = ['GET', 'POST'])
-def managerdashboard():
-    # try:
-    #     print("try")
-    #     security = Security.query.filter_by(domain = 'Security').all()
-    #     security_text = '<ul>'
-    #     for secu in security:
-    #         security_text += '<li>' + secu.name + ',' + secu.username + '</li>'
-    #         print(security_text)
-    #     security_text += '</ul>'
-    #     return security_text
-    # except Exception as e:
-    #     # e holds description of the error
-    #     print("except")
-    #     error_text = "<p>The error:<br>" + str(e) + "</p>"
-    #     hed = '<h1>Something is broken.</h1>'
-    #     return hed + error_text
-    if (request.method == 'GET'):
-        try:
-            security = Security.query.filter_by(domain='Security').order_by(Security.name).all()
-            abes = Absence.query.filter_by(status = 'Pending').order_by(Absence.timestamp).all()
+@app.route("/createduty", methods = ['GET', 'POST'])
+def createduty():
+    if (request.method == 'POST'):
+        didno = request.form.get('didno')
+        ddate = request.form.get('ddate')
+        stime = request.form.get('stime')
+        etime = request.form.get('etime')
+        sduty = Duty(didno = didno, ddate = ddate, stime = stime, etime = etime)
+        print(sduty)
+        print("inside nif")
+        db.session.add(sduty)
+        db.session.commit()
 
-            return render_template('managerdash.html', security=security, abes=abes)
-        except Exception as e:
-            # e holds description of the error
-            error_text = "<p>The error:<br>" + str(e) + "</p>"
-            hed = '<h1>Something is broken.</h1>'
-            return hed + error_text
-    # else :
-    #     try:
-    #         security = Security.query.filter_by(domain='Security').order_by(Security.name).all()
-    #         abes = Absence.query.filter_by(status = 'Pending').order_by(Absence.timestamp).all()
-    #         return render_template('managerdash.html', security=security, abes=abes)
-    #     except Exception as e:
-    #         # e holds description of the error
-    #         error_text = "<p>The error:<br>" + str(e) + "</p>"
-    #         hed = '<h1>Something is broken.</h1>'
-    #         return hed + error_text
+    return render_template("createduty.html")
+
     
-
 @app.route("/securitydashboard", methods = ['GET', 'POST'])
 def securitydashboard():
     if(request.method=='POST'):
@@ -165,7 +151,7 @@ def registration():
         idno = request.form.get('idno')
         password = request.form.get('pword')
         cpword = request.form.get('cpword') 
-        pword = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        pword = bcrypt.generate_password_hash(password).decode('utf-8')
 
         if password == cpword :
             if domain == "Manager": 
