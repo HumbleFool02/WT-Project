@@ -75,10 +75,6 @@ def managerLogin():
             security = Security.query.filter_by(domain='Security').order_by(Security.name).all()
             abes = Absence.query.filter_by(status = 'Pending').order_by(Absence.timestamp).all()
             duty = Duty.query.order_by(Duty.ddate).all()
-            
-            
-            
-                 
             return render_template('managerdash.html', security=security, abes=abes , username = data.username, duty = duty)
              
         else:
